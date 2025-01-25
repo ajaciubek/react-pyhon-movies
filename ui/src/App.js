@@ -5,17 +5,14 @@ import "milligram";
 import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
 import ActorForm from "./ActorForm"
+import ActorList from "./ActorList"
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
     const [actors, setActors] = useState([])
     const [addingActor, setAddingActor] = useState(false);
-
-    // function handleAddMovie(movie) {
-    //     setMovies([...movies, movie]);
-    //     setAddingMovie(false);
-    // }
 
     useEffect(() => {
     const fetchMovies = async () => {
@@ -26,6 +23,17 @@ function App() {
         }
     };
     fetchMovies();
+    }, []);
+
+    useEffect(() => {
+    const fetchActors = async () => {
+        const response = await fetch(`/actors`);
+        if (response.ok) {
+            const actors = await response.json();
+            setActors(actors);
+        }
+    };
+    fetchActors();
     }, []);
 
     async function handleAddMovie(movie) {
@@ -41,6 +49,7 @@ function App() {
     }
 
     async function handleAddActor(actor) {
+      console.log(actor)
       const response = await fetch('/actors', {
         method: 'POST',
         body: JSON.stringify(actor),
@@ -62,11 +71,21 @@ function App() {
         }
     }
 
+    async function handleDeleteActor(actor) {
+      const response = await fetch(`/actors/${actor.id}`, {
+        method: 'DELETE',
+      });
+        if (response.ok) {
+        const nextActors = actors.filter(m => m !== actor);
+        setActors(nextActors);
+        }
+    }
+
     return (
         <div className="container">
-            <h1>My favourite movies to watch</h1>
+            <h1>Ulubione filmy:</h1>
             {movies.length === 0
-                ? <p>No movies yet. Maybe add something?</p>
+                ? <p>Lista pusta, może coś dodaj ?</p>
                 : <MoviesList movies={movies}
                               onDeleteMovie={(movie) => handleDeleteMovie(movie)}
                 />}
@@ -75,11 +94,18 @@ function App() {
                              buttonLabel="Dodaj film"
                 />
                 : <button onClick={() => setAddingMovie(true)}>Dodaj film</button>}
+            <h1>Ulubioni aktorzy:</h1>
             {addingActor
                 ? <ActorForm onActorSubmit={handleAddActor}
                              buttonLabel="Dodaj aktora"
+                             movies={movies}
                 />
                 : <button onClick={() => setAddingActor(true)}>Dodaj aktora</button>}
+            {actors.length === 0
+                ? <p>Lista pusta, może coś dodaj ?</p>
+                : <ActorList actors={actors}
+                             onDeleteActor={(actor) => handleDeleteActor(actor)}
+                />}
         </div>
     );
 }

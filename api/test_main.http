@@ -66,3 +66,14 @@ DELETE http://127.0.0.1:8000/actors/4
 Accept: application/json
 
 ###
+
+POST http://127.0.0.1:8000/actors
+Content-Type: application/json
+
+{
+  "name": "Donald",
+  "surname": "Trump",
+  "movie" : ""
+}
+
+###
