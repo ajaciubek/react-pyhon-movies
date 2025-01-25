@@ -42,3 +42,28 @@ def get_movie(movie_id: int):
         raise HTTPException(status_code=404, detail="Movie not found")
     db_movie.delete_instance()
     return db_movie
+
+@app.get("/actors/", response_model=List[schemas.Actor])
+def get_movies():
+    return list(models.Actor.select())
+
+@app.get("/actors/{actor_id}", response_model=schemas.Actor)
+def get_movie(actor_id: int):
+    try:
+        movie = models.Actor.get(actor_id)
+    except:
+        raise HTTPException(status_code=404, detail="Actor not found")
+    return movie
+
+@app.post("/actors/", response_model=schemas.Actor)
+def add_movie(actor: schemas.ActorBase):
+    added_actor = models.Actor.create(**actor.dict())
+    return added_actor
+
+@app.delete("/actors/{actor_id}", response_model=schemas.Actor)
+def delete_movie(actor_id: int):
+    actor_to_delete = models.Actor.get(models.Actor.id == actor_id)
+    if actor_to_delete is None:
+        raise HTTPException(status_code=404, detail="Actor not found")
+    actor_to_delete.delete_instance()
+    return actor_to_delete

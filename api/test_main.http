@@ -1,12 +1,7 @@
-POST http://127.0.0.1:8000/movies
-Content-Type: application/json
+# Test your FastAPI endpoints
 
-{
-  "title": "title1",
-  "year": 1923,
-  "director": "director1",
-  "description": ""
-}
+GET http://127.0.0.1:8000/
+Accept: application/json
 
 ###
 
@@ -15,10 +10,60 @@ Accept: application/json
 
 ###
 
-GET http://127.0.0.1:8000/movies/7
+GET http://127.0.0.1:8000/movies/1
 Accept: application/json
 
 ###
 
-DELETE http://127.0.0.1:8000/movies/5
+POST http://127.0.0.1:8000/movies
+Content-Type: application/json
+
+{
+  "title": "Batman Begins",
+  "year": 2005,
+  "director": "Christopher Nolan",
+  "description": ""
+}
+
+###
+
+DELETE http://127.0.0.1:8000/movies/11
 Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/actor/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/movies/99
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/actors/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/actors/1
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8000/actors
+Content-Type: application/json
+
+{
+  "name": "Donald",
+  "surname": "Trump"
+
+}
+
+###
+
+DELETE http://127.0.0.1:8000/actors/4
+Accept: application/json
+
+###
