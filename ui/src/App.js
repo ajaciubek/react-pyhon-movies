@@ -4,10 +4,13 @@ import {useEffect} from "react";
 import "milligram";
 import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
+import ActorForm from "./ActorForm"
 
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
+    const [actors, setActors] = useState([])
+    const [addingActor, setAddingActor] = useState(false);
 
     // function handleAddMovie(movie) {
     //     setMovies([...movies, movie]);
@@ -37,6 +40,18 @@ function App() {
       }
     }
 
+    async function handleAddActor(actor) {
+      const response = await fetch('/actors', {
+        method: 'POST',
+        body: JSON.stringify(actor),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (response.ok) {
+        setActors([...actors, actor]);
+        setAddingActor(false);
+      }
+    }
+
     async function handleDeleteMovie(movie) {
       const response = await fetch(`/movies/${movie.id}`, {
         method: 'DELETE',
@@ -57,9 +72,14 @@ function App() {
                 />}
             {addingMovie
                 ? <MovieForm onMovieSubmit={handleAddMovie}
-                             buttonLabel="Add a movie"
+                             buttonLabel="Dodaj film"
                 />
-                : <button onClick={() => setAddingMovie(true)}>Add a movie</button>}
+                : <button onClick={() => setAddingMovie(true)}>Dodaj film</button>}
+            {addingActor
+                ? <ActorForm onActorSubmit={handleAddActor}
+                             buttonLabel="Dodaj aktora"
+                />
+                : <button onClick={() => setAddingActor(true)}>Dodaj aktora</button>}
         </div>
     );
 }

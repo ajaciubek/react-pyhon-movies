@@ -58,7 +58,6 @@ Content-Type: application/json
 {
   "name": "Donald",
   "surname": "Trump"
-
 }
 
 ###
