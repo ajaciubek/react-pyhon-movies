@@ -26,6 +26,17 @@ def add_movie(movie: schemas.MovieBase):
     movie = models.Movie.create(**movie.dict())
     return movie
 
+@app.post("/movies/{movie_id}/{actor_id}", response_model=schemas.Movie)
+def add_movie(movie_id:int, actor_id:int):
+    try:
+        actor = models.Actor.get(actor_id)
+        movie = models.Movie.get(movie_id)
+    except:
+        raise HTTPException(status_code=404, detail="Data not found")
+
+    movie.actors.add(actor)
+
+    return movie
 
 @app.get("/movies/{movie_id}", response_model=schemas.Movie)
 def get_movie(movie_id: int):

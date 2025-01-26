@@ -6,8 +6,12 @@ export default function MovieListItem(props) {
                 {' '}
                 <span>({props.movie.year})</span>
                 {' '}
-                directed by {props.movie.director}
+                reżyseria: {props.movie.director}
                 {' '}
+                aktorzy:
+                {/*{props.movie.actors.map(actor => <li key={actor.id}>*/}
+                {/*    {actor.name}*/}
+                {/*</li>)}*/}
                 <a onClick={props.onDelete}>Usuń</a>
             </div>
             {props.movie.description}
