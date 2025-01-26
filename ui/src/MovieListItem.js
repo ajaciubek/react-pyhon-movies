@@ -10,8 +10,11 @@ export default function MovieListItem(props) {
                 {' '}
                 aktorzy:
                 {/*{props.movie.actors.map(actor => <li key={actor.id}>*/}
-                {/*    {actor.name}*/}
+                {/*    {actor.name} {actor.surname}*/}
                 {/*</li>)}*/}
+                {props.movie.actors.map(actor =>
+                    <span> {actor.name} {actor.surname}</span>
+                )}
                 <a onClick={props.onDelete}>Usuń</a>
             </div>
             {props.movie.description}
