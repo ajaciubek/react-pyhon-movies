@@ -62,12 +62,17 @@ function App() {
             for (const movie_id of actor['movies']){
                 const response_movie = await fetch(`/movies/${movie_id}/${created_actor.id}`, {
                     method: 'POST',
-                    body: JSON.stringify(actor),
                     headers: { 'Content-Type': 'application/json' }
                 });
                 if (response_movie.ok){
                     const created_movie = await response_movie.json();
-                    setMovies([...movies, created_movie]);
+                    const updatedMovies = movies.map((movie) => {
+                        if (movie.id === created_movie.id) {
+                            return {...movie, ...created_movie}
+                        }
+                        return movie;
+                    });
+                    setMovies(updatedMovies);
                     setAddingMovie(false);
                 }
             }
@@ -81,7 +86,7 @@ function App() {
         method: 'DELETE',
       });
         if (response.ok) {
-        const nextMovies = movies.filter(m => m !== movie);
+        const nextMovies = movies.filter(m => m.id !== movie.id);
         setMovies(nextMovies);
         }
     }
@@ -91,8 +96,14 @@ function App() {
         method: 'DELETE',
       });
         if (response.ok) {
-            const nextActors = actors.filter(m => m !== actor);
+            const nextActors = actors.filter(a => a.id !== actor.id);
             setActors(nextActors);
+
+            const response = await fetch(`/movies`);
+            if (response.ok) {
+                const movies = await response.json();
+                setMovies(movies);
+            }
         }
     }
 

@@ -52,6 +52,7 @@ def get_movie(movie_id: int):
     if db_movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     db_movie.delete_instance()
+    models.ActorMovie.delete().where(models.ActorMovie.movie == movie_id).execute()
     return db_movie
 
 @app.get("/actors", response_model=List[schemas.Actor])
@@ -77,4 +78,5 @@ def delete_movie(actor_id: int):
     if actor_to_delete is None:
         raise HTTPException(status_code=404, detail="Actor not found")
     actor_to_delete.delete_instance()
+    models.ActorMovie.delete().where(models.ActorMovie.actor == actor_id).execute()
     return actor_to_delete
