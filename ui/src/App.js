@@ -7,6 +7,8 @@ import MoviesList from "./MoviesList";
 import ActorForm from "./ActorForm"
 import ActorList from "./ActorList"
 
+import Autocomplete from '@mui/material/Autocomplete';
+
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
@@ -64,17 +66,12 @@ function App() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
-                if (response_movie.ok){
-                    const created_movie = await response_movie.json();
-                    const updatedMovies = movies.map((movie) => {
-                        if (movie.id === created_movie.id) {
-                            return {...movie, ...created_movie}
-                        }
-                        return movie;
-                    });
-                    setMovies(updatedMovies);
-                    setAddingMovie(false);
-                }
+            }
+            
+            const response_movies = await fetch(`/movies`);
+            if (response_movies.ok) {
+                const movies = await response_movies.json();
+                setMovies(movies);
             }
         }
 
