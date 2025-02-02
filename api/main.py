@@ -43,9 +43,9 @@ def get_movies():
 def add_movie(movie: schemas.MovieBase):
     movie = models.Movie.create(**movie.dict())
     qdrant_client.upsert(
-        collection_name="movies",
+        collection_name="movies_2",
         wait=True,
-        points=[PointStruct(id=movie.id, vector=encoder.encode(movie.description), payload={"title": movie.title})],
+        points=[PointStruct(id=movie.id, vector=encoder.encode(f"{movie.title} {movie.description}"), payload={"title": movie.title})],
     )
     return movie
 
@@ -77,7 +77,7 @@ def get_movie(movie_id: int):
     db_movie.delete_instance()
     models.ActorMovie.delete().where(models.ActorMovie.movie == movie_id).execute()
     qdrant_client.delete(
-        collection_name="movies", 
+        collection_name="movies_2", 
         wait=True,
         points_selector = [movie_id]
     )
@@ -114,7 +114,7 @@ def search_movies(query: str):
     if not query:
         return []
     search_result = qdrant_client.search(
-        collection_name="movies", 
+        collection_name="movies_2", 
         query_vector=encoder.encode(query), 
         limit=3,
     )
