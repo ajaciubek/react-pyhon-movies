@@ -1,7 +1,6 @@
 import {useState} from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
 export default function ActorForm(props) {

@@ -7,17 +7,23 @@ import MoviesList from "./MoviesList";
 import ActorForm from "./ActorForm"
 import ActorList from "./ActorList"
 
-import Autocomplete from '@mui/material/Autocomplete';
-
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
     const [actors, setActors] = useState([])
     const [addingActor, setAddingActor] = useState(false);
+    const [searchMovieValue, setSearchMovieValue] = useState('');
+    const [allMovies, setAllMovies] = useState([]);
 
     useEffect(() => {
     const fetchMovies = async () => {
-        const response = await fetch(`/movies`);
+        const response_all = await fetch(`/movies`);
+        if (response_all.ok) {
+            const allMovies = await response_all.json();
+            setAllMovies(allMovies);
+        }
+
+        const response = await fetch(`/search?query=${searchMovieValue}`);
         if (response.ok) {
             const movies = await response.json();
             setMovies(movies);
@@ -37,6 +43,15 @@ function App() {
     fetchActors();
     }, []);
 
+    async function handleSearchMovieChange(newValue){
+        setSearchMovieValue(newValue);
+        const response = await fetch(`/search?query=${newValue}`);
+        if (response.ok) {
+            const movies = await response.json();
+            setMovies(movies);
+        }
+      };
+
     async function handleAddMovie(movie) {
       const response = await fetch('/movies', {
         method: 'POST',
@@ -44,8 +59,13 @@ function App() {
         headers: { 'Content-Type': 'application/json' }
       });
       if (response.ok) {
-          const created_movie = await response.json();
-          setMovies([...movies, created_movie]);
+            const created_movie = await response.json();
+            setAllMovies([...allMovies, created_movie]);
+            const search_response = await fetch(`/search?query=${searchMovieValue}`);
+            if (search_response.ok) {
+                const movies = await search_response.json();
+                setMovies(movies);
+            }
           setAddingMovie(false);
       }
     }
@@ -67,15 +87,12 @@ function App() {
                     headers: { 'Content-Type': 'application/json' }
                 });
             }
-            
-            const response_movies = await fetch(`/movies`);
-            if (response_movies.ok) {
-                const movies = await response_movies.json();
+            const search_response = await fetch(`/search?query=${searchMovieValue}`);
+            if (search_response.ok) {
+                const movies = await search_response.json();
                 setMovies(movies);
             }
         }
-
-
     }
 
     async function handleDeleteMovie(movie) {
@@ -83,8 +100,8 @@ function App() {
         method: 'DELETE',
       });
         if (response.ok) {
-        const nextMovies = movies.filter(m => m.id !== movie.id);
-        setMovies(nextMovies);
+            setMovies(movies.filter(m => m.id !== movie.id));
+            setAllMovies(allMovies.filter(m => m.id !== movie.id))
         }
     }
 
@@ -95,8 +112,7 @@ function App() {
         if (response.ok) {
             const nextActors = actors.filter(a => a.id !== actor.id);
             setActors(nextActors);
-
-            const response = await fetch(`/movies`);
+            const response = await fetch(`/search?query=${searchMovieValue}`);
             if (response.ok) {
                 const movies = await response.json();
                 setMovies(movies);
@@ -106,8 +122,11 @@ function App() {
 
     return (
         <div className="container">
+            <strong>Baza filmów</strong>
+            <input type="text" value={searchMovieValue} onChange={(event) =>  handleSearchMovieChange(event.target.value)} placeholder='Wyszukaj film...'/>
+
             {movies.length === 0
-                ? <p>Lista filmów pusta, może coś dodaj ?</p>
+                ? <div></div>
                 : <MoviesList movies={movies}
                               onDeleteMovie={(movie) => handleDeleteMovie(movie)}
                 />}
@@ -125,7 +144,7 @@ function App() {
             {addingActor
                 ? <ActorForm onActorSubmit={handleAddActor}
                              buttonLabel="Dodaj aktora"
-                             movies={movies}
+                             movies={allMovies}
                 />
                 : <button onClick={() => setAddingActor(true)}>Dodaj aktora</button>}
         </div>
