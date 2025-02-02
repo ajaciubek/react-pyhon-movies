@@ -1,6 +1,7 @@
 from contextvars import ContextVar
 
 import peewee
+import os
 
 DATABASE_NAME = "movies.db"
 db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
@@ -17,6 +18,11 @@ class PeeweeConnectionState(peewee._ConnectionState):
     def __getattr__(self, name):
         return self._state.get()[name]
 
+def set_up_test_db():
+    if os.path.exists("movies.db"):
+        os.remove("movies.db")
+
+set_up_test_db()
 
 db = peewee.SqliteDatabase(DATABASE_NAME, check_same_thread=False)
 

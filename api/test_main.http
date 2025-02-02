@@ -78,9 +78,21 @@ Content-Type: application/json
 
 ###
 
+POST http://127.0.0.1:8000/movies/1/1
+Content-Type: application/json
+
 ###
 
-POST http://127.0.0.1:8000/movies/1/1
+POST http://127.0.0.1:8000/search
+Content-Type: application/json
+
+{
+  "query": "Donald"
+}
+
+###
+
+GET http://localhost:8000/search?query=love story
 Content-Type: application/json
 
 ###

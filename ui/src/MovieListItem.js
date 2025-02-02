@@ -6,17 +6,17 @@ export default function MovieListItem(props) {
                 {' '}
                 <span>({props.movie.year})</span>
                 {' '}
-                <strong>reżyseria:</strong> {props.movie.director}
+                <strong>Reżyseria:</strong> {props.movie.director}
                 {' '}
                 {props.movie.actors.length > 0 && (
                     <>
-                        <strong>aktorzy:</strong>
+                        <strong>Występują:</strong>
                         {props.movie.actors.map(actor =>
                             <span key={actor.id}> {actor.name} {actor.surname}</span>
                         )}
                     </>
                 )}
-                <a onClick={props.onDelete}>Usuń</a>
+                <a onClick={props.onDelete}> Usuń</a>
             </div>
             {props.movie.description}
         </div>
